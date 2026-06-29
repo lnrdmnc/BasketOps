@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # BasketOps AI
 
 ### Basketball Analytics, Shot Intelligence, AI & MLOps Platform
