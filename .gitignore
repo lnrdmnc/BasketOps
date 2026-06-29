@@ -1,0 +1,38 @@
+# === Ambiente Virtuale (Python) ===
+.venv/
+venv/
+ENV/
+env/
+bin/
+lib/
+include/
+
+# === Cache di Python e file compilati ===
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# === Dati e File Locali (Data Science) ===
+# Escludiamo i CSV scaricati localmente perché i dati devono stare nel DB
+data/*.csv
+data/*.json
+*.log
+
+# === Configurazioni di Sistema e IDE ===
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# === Docker e Database ===
+# Impedisce di pushare i dati grezzi del database memorizzati da Docker
+postgres_data/
+
+# === Credenziali e Variabili d'Ambiente ===
+.env
+*.pem
+*.key
