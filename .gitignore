@@ -1,4 +1,5 @@
 # === Ambiente Virtuale (Python) ===
+.basketops/
 .venv/
 venv/
 ENV/
