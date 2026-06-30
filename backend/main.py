@@ -32,14 +32,18 @@ app.add_middleware(
 )
 
 # Funzione interna per connettersi al database PostgreSQL su Docker
+import os
+
 def get_db_connection():
+    # Se rileva che è dentro Docker usa 'postgres_db', altrimenti usa 'localhost'
+    db_host = os.getenv("DB_HOST", "localhost")
     return psycopg2.connect(
-        host="localhost",
+        host=db_host,
         database="basketops_db",
         user="basketadmin",
         password="basketpassword",
         port="5432",
-        cursor_factory=RealDictCursor # Trasforma i risultati delle query direttamente in dizionari Python (perfetti per JSON)
+        cursor_factory=RealDictCursor
     )
 
 # 1. Rotta di test (Root)

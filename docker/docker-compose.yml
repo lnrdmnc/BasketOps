@@ -1,17 +1,52 @@
 version: '3.8'
 
 services:
+  # 1. Il Database
   postgres_db:
     image: postgres:15-alpine
-    container_name: basketops_postgres
+    container_name: basketops_db_container
     environment:
+      POSTGRES_DB: basketops_db
       POSTGRES_USER: basketadmin
       POSTGRES_PASSWORD: basketpassword
-      POSTGRES_DB: basketops_db
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - basketops_network
+
+  # 2. Il Backend (FastAPI)
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: basketops_backend_container
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=postgres_db  # <--- NOTA: All'interno di Docker, l'host non è più 'localhost' ma il nome del servizio!
+    depends_on:
+      - postgres_db
+    networks:
+      - basketops_network
+
+  # 3. Il Frontend (Streamlit)
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: basketops_frontend_container
+    ports:
+      - "8501:8501"
+    depends_on:
+      - backend
+    networks:
+      - basketops_network
 
 volumes:
   postgres_data:
+
+networks:
+  basketops_network:
+    driver: bridge
