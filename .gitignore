@@ -37,3 +37,4 @@ postgres_data/
 .env
 *.pem
 *.key
+*.pkl
