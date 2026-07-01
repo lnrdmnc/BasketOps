@@ -15,8 +15,9 @@ def train_shot_predictor():
     """
     print("🧠 AI Engine: Connessione al DB per estrazione dataset di addestramento...")
     try:
+        db_host = os.getenv("DB_HOST", "localhost")
         conn = psycopg2.connect(
-            host="localhost", database="basketops_db",
+            host=db_host, database="basketops_db",
             user="basketadmin", password="basketpassword", port="5432"
         )
         # Estraiamo le feature geometriche e temporali, e il target 'made'

@@ -2,10 +2,12 @@ import time
 import psycopg2
 from nba_api.stats.static import players as nba_players_api
 from nba_api.stats.endpoints import shotchartdetail
-
+import os
 def populate():
+
+    db_host = os.getenv("DB_HOST", "localhost")
     # Connessione al DB
-    conn = psycopg2.connect(host="localhost", database="basketops_db", user="basketadmin", password="basketpassword", port="5432")
+    conn = psycopg2.connect(host=db_host, database="basketops_db", user="basketadmin", password="basketpassword", port="5432")
     cursor = conn.cursor()
 
     target_players = [

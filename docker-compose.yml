@@ -37,6 +37,8 @@ services:
       context: .
       dockerfile: frontend/Dockerfile
     container_name: basketops_frontend_container
+    environment:
+      - DOCKER_ENV=true
     ports:
       - "8501:8501"
     depends_on:

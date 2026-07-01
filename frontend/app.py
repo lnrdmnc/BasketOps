@@ -3,15 +3,18 @@ import requests
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
+import os
 
 st.set_page_config(page_title="BasketOps AI", layout="wide")
 
 st.title("🏀 BasketOps AI - Shot Chart Analyzer")
 st.subheader("Visualizzazione spaziale e intelligenza balistica")
 
-# URL del nostro backend FastAPI
-BACKEND_URL = "http://127.0.0.1:8000/api/v1"
 
+if os.getenv("DOCKER_ENV") == "true":
+    BACKEND_URL = "http://backend:8000/api/v1"
+else:
+    BACKEND_URL = "http://127.0.0.1:8000/api/v1"
 # 1. Recupera la lista dei giocatori dal Backend
 @st.cache_data # Evita di rifare la chiamata API a ogni click, velocizzando l'app
 def load_players():

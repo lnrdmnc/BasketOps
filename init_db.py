@@ -1,10 +1,12 @@
 import psycopg2
-
+import os
 def initialize_database():
     try:
+
+        db_host = os.getenv("DB_HOST", "localhost")
         # Connessione al database PostgreSQL su Docker
         conn = psycopg2.connect(
-            host="localhost",
+            host=db_host,
             database="basketops_db",
             user="basketadmin",
             password="basketpassword",
@@ -12,10 +14,10 @@ def initialize_database():
         )
         cursor = conn.cursor()
         
-        print("⚡ Connessione al database riuscita!")
+        print("Connessione al database riuscita!")
         
         # 1. Pulizia: eliminiamo le tabelle se esistono in uno stato corrotto
-        print("🧹 Pulizia vecchie tabelle (se esistenti)...")
+        print("Pulizia vecchie tabelle (se esistenti)...")
         cursor.execute("DROP TABLE IF EXISTS shots CASCADE;")
         cursor.execute("DROP TABLE IF EXISTS players CASCADE;")
         
