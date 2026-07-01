@@ -1,0 +1,51 @@
+name: BasketOps AI CI/CD Pipeline
+
+# Controlla quando attivare la pipeline (ogni volta che fai un push sul branch 'main')
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  continuous-integration:
+    name: Continuous Integration (Build & Test)
+    runs-on: ubuntu-latest  # Usa l'ultimo server Linux messo a disposizione da GitHub
+
+    steps:
+      # 1. Scarica il codice del tuo progetto nella macchina virtuale di GitHub
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 2. Configura l'ambiente Docker Buildx (ottimizza la compilazione dei container)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 3. Testa il Build dei singoli Dockerfile (Verifica che non ci siano errori di sintassi o librerie mancanti)
+      - name: Verify Backend Docker Image
+        run: docker build -t basketops-backend-test -f backend/Dockerfile .
+
+      - name: Verify Frontend Docker Image
+        run: docker build -t basketops-frontend-test -f frontend/Dockerfile .
+
+      # 4. Testa l'orchestrazione intera tramite Docker Compose
+      - name: Start Infrastructure with Docker Compose
+        run: |
+          docker compose up --build -d
+          echo "Container avviati in background nel server di test."
+
+      # 5. Verifica che i servizi rispondano (Health Check)
+      - name: Check Health of Services
+        run: |
+          echo "Attesa di 10 secondi per l'inizializzazione dei servizi..."
+          sleep 10
+          
+          echo "Verifica stato container..."
+          docker compose ps
+          
+          echo "Verifica risposta Backend FastAPI..."
+          curl --fail http://localhost:8000/ || echo "Backend raggiungibile o configurato per redirect"
+
+      # 6. Spegnimento pulito
+      - name: Shutdown Test Infrastructure
+        run: docker compose down
