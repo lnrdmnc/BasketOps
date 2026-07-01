@@ -38,12 +38,11 @@ def get_db_connection():
     # Se rileva che è dentro Docker usa 'postgres_db', altrimenti usa 'localhost'
     db_host = os.getenv("DB_HOST", "localhost")
     return psycopg2.connect(
-        host=db_host,
-        database="basketops_db",
-        user="basketadmin",
-        password="basketpassword",
-        port="5432",
-        cursor_factory=RealDictCursor
+        host=os.getenv("DB_HOST", "localhost"),
+        database=os.getenv("DB_NAME", "basketops_db"),
+        user=os.getenv("DB_USER", "basketadmin"),
+        password=os.getenv("DB_PASSWORD"),  # niente default: se manca, deve fallire
+        port=os.getenv("DB_PORT", "5432"),
     )
 
 # 1. Rotta di test (Root)
