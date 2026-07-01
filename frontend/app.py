@@ -9,26 +9,24 @@ st.set_page_config(page_title="BasketOps AI", layout="wide")
 
 st.title("🏀 BasketOps AI - Shot Chart Analyzer")
 st.subheader("Visualizzazione spaziale e intelligenza balistica")
-
-headers = {"X-API-Key": os.getenv("API_KEY")}
-requests.get(f"{BACKEND_URL}/players", headers=headers)
+API_KEY = os.getenv("API_KEY")
+HEADERS = {"X-API-Key": API_KEY}
 
 if os.getenv("DOCKER_ENV") == "true":
     BACKEND_URL = "http://backend:8000/api/v1"
 else:
     BACKEND_URL = "http://127.0.0.1:8000/api/v1"
-# 1. Recupera la lista dei giocatori dal Backend
-@st.cache_data # Evita di rifare la chiamata API a ogni click, velocizzando l'app
+
+@st.cache_data
 def load_players():
     try:
-        response = requests.get(f"{BACKEND_URL}/players")
+        response = requests.get(f"{BACKEND_URL}/players", headers=HEADERS)
         if response.status_code == 200:
             return response.json()
         return []
     except Exception:
         st.error("❌ Impossibile connettersi al Backend FastAPI. Assicurati che sia acceso!")
         return []
-
 players_data = load_players()
 
 if not players_data:
@@ -44,7 +42,7 @@ else:
 
     # 2. Recupera i tiri del giocatore selezionato dal Backend
     with st.spinner("Caricamento tiri dal database..."):
-        response = requests.get(f"{BACKEND_URL}/shots/{selected_player_id}")
+        response = requests.get(f"{BACKEND_URL}/shots/{selected_player_id}", headers=HEADERS)
         if response.status_code == 200:
             data = response.json()
             shots_list = data['shots']
@@ -98,7 +96,7 @@ else:
         with tab2:
             # --- CODICE DELLA HEATMAP CORRETTO ---
             with st.spinner("Generazione mappa di densità..."):
-                heat_response = requests.get(f"{BACKEND_URL}/analytics/heatmap/{selected_player_id}")
+                heat_response = requests.get(f"{BACKEND_URL}/analytics/heatmap/{selected_player_id}" , headers=HEADERS)
                 if heat_response.status_code == 200:
                     heat_data = heat_response.json()
                     hdf = pd.DataFrame(heat_data)

@@ -69,27 +69,17 @@ def verify_api_key(key: str = Security(api_key_header)):
 
 @app.get("/api/v1/players", dependencies=[Depends(verify_api_key)])
 def get_players():
-    
-    
-    
-    import logging
-logger = logging.getLogger("basketops")
-
-except Exception as e:
-    logger.error(f"Errore DB: {e}", exc_info=True)
-    raise HTTPException(status_code=500, detail="Errore interno del server")
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
-        
         cursor.execute("SELECT player_id, player_name, team_name FROM players ORDER BY player_name;")
         players = cursor.fetchall()
-        
         cursor.close()
         conn.close()
         return players
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Errore del database: {str(e)}")
+        logger.error(f"Errore DB: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Errore interno del server")
 
 # 3. API per ottenere tutti i tiri di un giocatore specifico tramite il suo ID
 @app.get("/api/v1/shots/{player_id}")
