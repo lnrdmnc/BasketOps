@@ -18,7 +18,7 @@ services:
 
   # 2. Il Backend (FastAPI)
   backend:
-    env_file: .env
+    env_file: /basketops/.env
     build:
       context: .
       dockerfile: backend/Dockerfile

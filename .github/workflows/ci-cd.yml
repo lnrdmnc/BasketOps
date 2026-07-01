@@ -31,6 +31,7 @@ jobs:
       # 4. Testa l'orchestrazione intera tramite Docker Compose
       - name: Start Infrastructure with Docker Compose
         run: |
+          cp .env.example .env  # <--- AGGIUNGI QUESTA RIGA QUI!
           docker compose up --build -d
           echo "Container avviati in background nel server di test."
 

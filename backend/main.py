@@ -7,6 +7,15 @@ from analytics.engine import calculate_advanced_stats, generate_heatmap_data
 from pydantic import BaseModel
 from ai.predictor import predict_shot_probability
 
+# backend/main.py
+from fastapi import Security, HTTPException
+from fastapi.security import APIKeyHeader
+
+
+
+
+
+
 # Definiamo la struttura dati che l'API deve aspettarsi dal frontend
 class ShotPredictionRequest(BaseModel):
     x: float
@@ -25,10 +34,10 @@ app = FastAPI(
 # Configurazione CORS: permette al Frontend (Streamlit) di parlare con il Backend senza blocchi di sicurezza
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # In produzione metteremo l'URL specifico del frontend
+    allow_origins=["http://localhost:8501"], 
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type"],
 )
 
 # Funzione interna per connettersi al database PostgreSQL su Docker
@@ -50,9 +59,25 @@ def get_db_connection():
 def read_root():
     return {"status": "online", "message": "Benvenuto su BasketOps AI API Engine"}
 
-# 2. API per ottenere la lista di tutti i giocatori presenti nel DB
-@app.get("/api/v1/players")
+
+API_KEY = os.getenv("API_KEY")
+api_key_header = APIKeyHeader(name="X-API-Key")
+
+def verify_api_key(key: str = Security(api_key_header)):
+    if key != API_KEY:
+        raise HTTPException(status_code=403, detail="Accesso negato")
+
+@app.get("/api/v1/players", dependencies=[Depends(verify_api_key)])
 def get_players():
+    
+    
+    
+    import logging
+logger = logging.getLogger("basketops")
+
+except Exception as e:
+    logger.error(f"Errore DB: {e}", exc_info=True)
+    raise HTTPException(status_code=500, detail="Errore interno del server")
     try:
         conn = get_db_connection()
         cursor = conn.cursor()

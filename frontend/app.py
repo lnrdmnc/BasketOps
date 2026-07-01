@@ -10,6 +10,8 @@ st.set_page_config(page_title="BasketOps AI", layout="wide")
 st.title("🏀 BasketOps AI - Shot Chart Analyzer")
 st.subheader("Visualizzazione spaziale e intelligenza balistica")
 
+headers = {"X-API-Key": os.getenv("API_KEY")}
+requests.get(f"{BACKEND_URL}/players", headers=headers)
 
 if os.getenv("DOCKER_ENV") == "true":
     BACKEND_URL = "http://backend:8000/api/v1"
