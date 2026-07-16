@@ -7,10 +7,10 @@ def initialize_database():
         # Connessione al database PostgreSQL su Docker
         conn = psycopg2.connect(
             host=db_host,
-            database="basketops_db",
-            user="basketadmin",
-            password="basketpassword",
-            port="5432"
+            database=os.getenv("DB_NAME", "basketops_db"),
+            user=os.getenv("DB_USER", "basketadmin"),
+            password=os.getenv("DB_PASSWORD"),
+            port=os.getenv("DB_PORT", "5432")
         )
         cursor = conn.cursor()
         

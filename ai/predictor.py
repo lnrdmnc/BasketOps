@@ -17,8 +17,11 @@ def train_shot_predictor():
     try:
         db_host = os.getenv("DB_HOST", "localhost")
         conn = psycopg2.connect(
-            host=db_host, database="basketops_db",
-            user="basketadmin", password="basketpassword", port="5432"
+            host=db_host,
+            database=os.getenv("DB_NAME", "basketops_db"),
+            user=os.getenv("DB_USER", "basketadmin"),
+            password=os.getenv("DB_PASSWORD"),
+            port=os.getenv("DB_PORT", "5432")
         )
         # Estraiamo le feature geometriche e temporali, e il target 'made'
         query = "SELECT x, y, distance, period, minutes_remaining, seconds_remaining, made FROM shots;"
